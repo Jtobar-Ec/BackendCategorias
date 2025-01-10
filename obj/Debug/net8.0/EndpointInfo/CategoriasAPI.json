@@ -1,0 +1,593 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Categorias API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Categorias": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TfaCategory"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TfaCategory"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TfaCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categorias"
+        ],
+        "parameters": [
+          {
+            "name": "categoryName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryDescription",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryPoints",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "categoryDeadLine",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Categorias/{id}": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TfaCategory"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TfaCategory"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TfaCategory"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categorias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TfaCategory"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TfaCategory"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TfaCategory"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categorias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TfaCategory": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryPoints": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "categoryDeadLine": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "tfaCertificates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaCertificate"
+            },
+            "nullable": true
+          },
+          "tfaHistories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaHistory"
+            },
+            "nullable": true
+          },
+          "tfaTasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTask"
+            },
+            "nullable": true
+          },
+          "tfaTeams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeam"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaCertificate": {
+        "type": "object",
+        "properties": {
+          "certificatesId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "certificateMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificateReceptor": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "certificateLead": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "certificateCategory": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "certificateCategoryNavigation": {
+            "$ref": "#/components/schemas/TfaCategory"
+          },
+          "certificateLeadNavigation": {
+            "$ref": "#/components/schemas/TfaUser"
+          },
+          "certificateReceptorNavigation": {
+            "$ref": "#/components/schemas/TfaUser"
+          },
+          "tfaHistories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaHistory"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaHistory": {
+        "type": "object",
+        "properties": {
+          "historyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "historyEmission": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "userHistoryId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "userCategoriesId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "userCertificateId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "userCategories": {
+            "$ref": "#/components/schemas/TfaCategory"
+          },
+          "userCertificate": {
+            "$ref": "#/components/schemas/TfaCertificate"
+          },
+          "userHistory": {
+            "$ref": "#/components/schemas/TfaUser"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaRol": {
+        "type": "object",
+        "properties": {
+          "rolId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rolName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rolDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "tfaUserRolIdaddionalNavigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUser"
+            },
+            "nullable": true
+          },
+          "tfaUserRols": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUser"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaTask": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "category": {
+            "$ref": "#/components/schemas/TfaCategory"
+          },
+          "tfaUsersTasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUsersTask"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaTeam": {
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamStatusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamLeadId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "categoriesId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "categories": {
+            "$ref": "#/components/schemas/TfaCategory"
+          },
+          "teamLead": {
+            "$ref": "#/components/schemas/TfaUser"
+          },
+          "teamStatus": {
+            "$ref": "#/components/schemas/TfaTeamstatus"
+          },
+          "colaboratorUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUser"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaTeamstatus": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string",
+            "nullable": true
+          },
+          "tfaTeams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeam"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaUser": {
+        "type": "object",
+        "properties": {
+          "usersId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userLastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "userPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rolId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rolIdaddional": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contrasenia": {
+            "type": "string",
+            "nullable": true
+          },
+          "rol": {
+            "$ref": "#/components/schemas/TfaRol"
+          },
+          "rolIdaddionalNavigation": {
+            "$ref": "#/components/schemas/TfaRol"
+          },
+          "tfaCertificateCertificateLeadNavigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaCertificate"
+            },
+            "nullable": true
+          },
+          "tfaCertificateCertificateReceptorNavigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaCertificate"
+            },
+            "nullable": true
+          },
+          "tfaHistories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaHistory"
+            },
+            "nullable": true
+          },
+          "tfaTeams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeam"
+            },
+            "nullable": true
+          },
+          "tfaUsersTasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUsersTask"
+            },
+            "nullable": true
+          },
+          "colaboratorTeams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeam"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaUsersTask": {
+        "type": "object",
+        "properties": {
+          "userTaskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusTask": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "evidencePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "evidenceUploadDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/TfaUser"
+          },
+          "userTask": {
+            "$ref": "#/components/schemas/TfaTask"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
