@@ -15,6 +15,8 @@ public partial class TfaHistory
 
     public int? UserCertificateId { get; set; }
 
+    public string? ReportType { get; set; }
+
     public virtual TfaCategory? UserCategories { get; set; }
 
     public virtual TfaCertificate? UserCertificate { get; set; }

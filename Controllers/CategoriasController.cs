@@ -9,7 +9,7 @@ using CategoriasAPI.Models;
 namespace CategoriasAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController] 
+    [ApiController]
     public class CategoriasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -101,7 +101,6 @@ namespace CategoriasAPI.Controllers
                 CategoryDeadLine = DateOnly.FromDateTime(categoryDeadLine) // Conversión explícita
             };
 
-
             // Verificar si la fecha límite ha pasado y reducir los puntos si es necesario
             if (categoryDeadLine < DateTime.Today)
             {
@@ -112,15 +111,23 @@ namespace CategoriasAPI.Controllers
                 }
             }
 
-            // Asociar la categoría con el equipo
-            team.Categories = tfaCategory;  // Aquí asociamos la categoría al equipo correctamente
-
-            // Agregar la categoría al contexto
+            // Agregar la categoría al contexto (se guarda primero)
             _context.TfaCategories.Add(tfaCategory);
 
             try
             {
-                // Guardar los cambios en la base de datos
+                // Guardar los cambios en la base de datos (esto asignará el CategoryId)
+                await _context.SaveChangesAsync();
+
+                // Ahora que la categoría tiene un CategoryId válido, podemos agregarla a la tabla intermedia
+                var teamCategory = new TfaTeamsCategories
+                {
+                    TeamId = team.TeamId,
+                    CategoriesId = tfaCategory.CategoryId // Ahora tiene un valor válido
+                };
+                _context.TfaTeamsCategories.Add(teamCategory);
+
+                // Guardar la relación en la tabla intermedia
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)

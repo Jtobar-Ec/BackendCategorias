@@ -32,7 +32,11 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<TfaUser> TfaUsers { get; set; }
 
+    public virtual DbSet<TfaUserPoint> TfaUserPoints { get; set; }
+
     public virtual DbSet<TfaUsersTask> TfaUsersTasks { get; set; }
+
+    public DbSet<TfaTeamsCategories> TfaTeamsCategories { get; set; }  // Agrega esta línea
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -41,6 +45,29 @@ public partial class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Modern_Spanish_CI_AI");
+
+        modelBuilder.Entity<TfaTeamsCategories>(entity =>
+        {
+            entity.HasKey(e => new { e.TeamId, e.CategoriesId }).HasName("PK__TFA_TEAM__CBFDC45B14D2BAED");
+
+            entity.ToTable("TFA_TEAMS_CATEGORIES");
+
+            entity.Property(e => e.TeamId).HasColumnName("teamID");
+            entity.Property(e => e.CategoriesId).HasColumnName("categoriesID");
+
+            entity.HasOne(d => d.Team)
+                .WithMany(p => p.TfaTeamsCategories)
+                .HasForeignKey(d => d.TeamId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_teamID");
+
+            entity.HasOne(d => d.Category)
+                .WithMany(p => p.TfaTeamsCategories)
+                .HasForeignKey(d => d.CategoriesId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_categoriesID");
+        });
+
 
         modelBuilder.Entity<TfaCategory>(entity =>
         {
@@ -57,6 +84,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("categoryName");
             entity.Property(e => e.CategoryPoints).HasColumnName("categoryPoints");
+            entity.Property(e => e.ReducePoints).HasColumnName("reducePoints");
         });
 
         modelBuilder.Entity<TfaCertificate>(entity =>
@@ -94,6 +122,10 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.HistoryId).HasColumnName("historyID");
             entity.Property(e => e.HistoryEmission).HasColumnName("historyEmission");
+            entity.Property(e => e.ReportType)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("reportType");
             entity.Property(e => e.UserCategoriesId).HasColumnName("userCategoriesID");
             entity.Property(e => e.UserCertificateId).HasColumnName("userCertificateID");
             entity.Property(e => e.UserHistoryId).HasColumnName("userHistoryID");
@@ -151,7 +183,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("TFA_TEAMS");
 
             entity.Property(e => e.TeamId).HasColumnName("teamID");
-            entity.Property(e => e.CategoriesId).HasColumnName("categoriesID");
             entity.Property(e => e.TeamDescription)
                 .HasMaxLength(50)
                 .HasColumnName("teamDescription");
@@ -161,20 +192,23 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("teamName");
             entity.Property(e => e.TeamStatusId).HasColumnName("teamStatusID");
 
-            entity.HasOne(d => d.Categories).WithMany(p => p.TfaTeams)
-                .HasForeignKey(d => d.CategoriesId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_TFA_TEAMS_TFA_CATEGORIES");
+            entity.HasOne(d => d.TeamStatus).WithMany(p => p.TfaTeams)
+                .HasForeignKey(d => d.TeamStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_teamStatusID");
 
             entity.HasOne(d => d.TeamLead).WithMany(p => p.TfaTeams)
                 .HasForeignKey(d => d.TeamLeadId)
                 .HasConstraintName("FK_teamLead");
 
-            entity.HasOne(d => d.TeamStatus).WithMany(p => p.TfaTeams)
-                .HasForeignKey(d => d.TeamStatusId)
+            // Relación con las categorías a través de la tabla intermedia
+            entity.HasMany(d => d.TfaTeamsCategories)
+                .WithOne(p => p.Team)
+                .HasForeignKey(d => d.TeamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_teamStatusID");
+                .HasConstraintName("FK_teamID");
         });
+
 
         modelBuilder.Entity<TfaTeamstatus>(entity =>
         {
@@ -238,6 +272,21 @@ public partial class ApplicationDbContext : DbContext
                         j.IndexerProperty<int>("ColaboratorUsersId").HasColumnName("colaboratorUsersID");
                         j.IndexerProperty<int>("ColaboratorTeamId").HasColumnName("colaboratorTeamID");
                     });
+        });
+
+        modelBuilder.Entity<TfaUserPoint>(entity =>
+        {
+            entity.HasKey(e => e.UserPointsId).HasName("PK__TFA_USER__9208B819F7BA6D7A");
+
+            entity.ToTable("TFA_USER_POINTS");
+
+            entity.Property(e => e.UserPointsId).HasColumnName("UserPointsID");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.TfaUserPoints)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_TFA_USER_POINTS_User");
         });
 
         modelBuilder.Entity<TfaUsersTask>(entity =>

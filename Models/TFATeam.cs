@@ -23,5 +23,9 @@ public partial class TfaTeam
 
     public virtual TfaTeamstatus TeamStatus { get; set; } = null!;
 
+    // Relación con la tabla intermedia
+    public virtual ICollection<TfaTeamsCategories> TfaTeamsCategories { get; set; } = new List<TfaTeamsCategories>();
+
+    // Relación con los colaboradores
     public virtual ICollection<TfaUser> ColaboratorUsers { get; set; } = new List<TfaUser>();
 }

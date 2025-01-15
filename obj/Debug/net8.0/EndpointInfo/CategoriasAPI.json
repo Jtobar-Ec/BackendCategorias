@@ -222,6 +222,18 @@
             "format": "date",
             "nullable": true
           },
+          "reducePoints": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tfaTeamsCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeamsCategories"
+            },
+            "nullable": true
+          },
           "tfaCertificates": {
             "type": "array",
             "items": {
@@ -323,6 +335,10 @@
           "userCertificateId": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "reportType": {
+            "type": "string",
             "nullable": true
           },
           "userCategories": {
@@ -436,12 +452,39 @@
           "teamStatus": {
             "$ref": "#/components/schemas/TfaTeamstatus"
           },
+          "tfaTeamsCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaTeamsCategories"
+            },
+            "nullable": true
+          },
           "colaboratorUsers": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TfaUser"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaTeamsCategories": {
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoriesId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "team": {
+            "$ref": "#/components/schemas/TfaTeam"
+          },
+          "category": {
+            "$ref": "#/components/schemas/TfaCategory"
           }
         },
         "additionalProperties": false
@@ -538,6 +581,13 @@
             },
             "nullable": true
           },
+          "tfaUserPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TfaUserPoint"
+            },
+            "nullable": true
+          },
           "tfaUsersTasks": {
             "type": "array",
             "items": {
@@ -551,6 +601,34 @@
               "$ref": "#/components/schemas/TfaTeam"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TfaUserPoint": {
+        "type": "object",
+        "properties": {
+          "userPointsId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pointsAmount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/TfaUser"
           }
         },
         "additionalProperties": false

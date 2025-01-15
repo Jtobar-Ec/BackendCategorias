@@ -33,6 +33,8 @@ public partial class TfaUser
 
     public virtual ICollection<TfaTeam> TfaTeams { get; set; } = new List<TfaTeam>();
 
+    public virtual ICollection<TfaUserPoint> TfaUserPoints { get; set; } = new List<TfaUserPoint>();
+
     public virtual ICollection<TfaUsersTask> TfaUsersTasks { get; set; } = new List<TfaUsersTask>();
 
     public virtual ICollection<TfaTeam> ColaboratorTeams { get; set; } = new List<TfaTeam>();
