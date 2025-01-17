@@ -55,18 +55,22 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.TeamId).HasColumnName("teamID");
             entity.Property(e => e.CategoriesId).HasColumnName("categoriesID");
 
+            // Relación con TfaTeam, eliminar en cascada cuando se elimina un equipo
             entity.HasOne(d => d.Team)
                 .WithMany(p => p.TfaTeamsCategories)
                 .HasForeignKey(d => d.TeamId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // Eliminar en cascada cuando se elimina un equipo
                 .HasConstraintName("FK_teamID");
 
+            // Relación con TfaCategory, eliminar en cascada cuando se elimina una categoría
             entity.HasOne(d => d.Category)
                 .WithMany(p => p.TfaTeamsCategories)
                 .HasForeignKey(d => d.CategoriesId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // Eliminar en cascada cuando se elimina una categoría
                 .HasConstraintName("FK_categoriesID");
         });
+
+
 
 
         modelBuilder.Entity<TfaCategory>(entity =>

@@ -40,19 +40,78 @@ namespace CategoriasAPI.Controllers
             return tfaCategory;
         }
 
-        // PUT: api/Categorias/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTfaCategory(int id, TfaCategory tfaCategory)
+        // PUT: api/Categorias/
+        [HttpPut("actualizarCategoria/{id}")]
+        public async Task<IActionResult> PutTfaCategory(int id,
+        string categoryName,
+        string? categoryDescription,
+        int categoryPoints,
+        DateTime categoryDeadLine,
+        int teamId)
         {
-            if (id != tfaCategory.CategoryId)
+            // Validar que los puntos no sean negativos
+            if (categoryPoints < 0)
             {
-                return BadRequest();
+                return BadRequest("Los puntos de la categoría no pueden ser negativos.");
             }
 
+            // Buscar la categoría a actualizar
+            var tfaCategory = await _context.TfaCategories.FindAsync(id);
+            if (tfaCategory == null)
+            {
+                return NotFound("La categoría con el ID proporcionado no existe.");
+            }
+
+            // Buscar el equipo en la base de datos
+            var team = await _context.TfaTeams.FindAsync(teamId);
+            if (team == null)
+            {
+                return NotFound("El equipo con el ID proporcionado no existe.");
+            }
+
+            // Actualizar los campos de la categoría
+            tfaCategory.CategoryName = categoryName;
+            tfaCategory.CategoryDescription = categoryDescription;
+            tfaCategory.CategoryPoints = categoryPoints;
+            tfaCategory.CategoryDeadLine = DateOnly.FromDateTime(categoryDeadLine); // Conversión explícita
+
+            // Verificar si la fecha límite ha pasado y reducir los puntos si es necesario
+            if (categoryDeadLine < DateTime.Today)
+            {
+                tfaCategory.CategoryPoints -= 10; // Reducción de puntos
+                if (tfaCategory.CategoryPoints < 0)
+                {
+                    tfaCategory.CategoryPoints = 0; // No permitir puntos negativos
+                }
+            }
+
+            // Marcar la entidad como modificada
             _context.Entry(tfaCategory).State = EntityState.Modified;
 
             try
             {
+                // Guardar los cambios en la categoría
+                await _context.SaveChangesAsync();
+
+                // Manejar la relación en la tabla intermedia
+                var existingTeamCategory = await _context.TfaTeamsCategories
+                    .FirstOrDefaultAsync(tc => tc.CategoriesId == tfaCategory.CategoryId);
+
+                if (existingTeamCategory != null)
+                {
+                    // Eliminar la relación existente
+                    _context.TfaTeamsCategories.Remove(existingTeamCategory);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Crear una nueva relación con el equipo actualizado
+                var newTeamCategory = new TfaTeamsCategories
+                {
+                    TeamId = team.TeamId,
+                    CategoriesId = tfaCategory.CategoryId
+                };
+
+                _context.TfaTeamsCategories.Add(newTeamCategory);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -69,6 +128,8 @@ namespace CategoriasAPI.Controllers
 
             return NoContent();
         }
+
+
 
         // POST: api/Categorias
         [HttpPost]
@@ -146,7 +207,6 @@ namespace CategoriasAPI.Controllers
             });
         }
 
-
         // DELETE: api/Categorias/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTfaCategory(int id)
@@ -157,11 +217,39 @@ namespace CategoriasAPI.Controllers
                 return NotFound();
             }
 
-            _context.TfaCategories.Remove(tfaCategory);
-            await _context.SaveChangesAsync();
+            // Iniciar una transacción
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Eliminar las relaciones en la tabla intermedia TfaTeamsCategories
+                    var teamCategories = _context.TfaTeamsCategories.Where(tc => tc.CategoriesId == id);
+                    if (teamCategories.Any())
+                    {
+                        _context.TfaTeamsCategories.RemoveRange(teamCategories);
+                        await _context.SaveChangesAsync();  // Guardar cambios en la tabla intermedia
+                    }
+
+                    // Ahora eliminar la categoría
+                    _context.TfaCategories.Remove(tfaCategory);
+                    await _context.SaveChangesAsync(); // Eliminar la categoría
+
+                    // Confirmar la transacción
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    // Si ocurre algún error, revertir la transacción
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
 
             return NoContent();
         }
+
+
+
 
         private bool TfaCategoryExists(int id)
         {

@@ -83,27 +83,6 @@
   },
   {
     "ContainingType": "CategoriasAPI.Controllers.CategoriasController",
-    "Method": "PutTfaCategory",
-    "RelativePath": "api/Categorias/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "tfaCategory",
-        "Type": "CategoriasAPI.Models.TfaCategory",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CategoriasAPI.Controllers.CategoriasController",
     "Method": "DeleteTfaCategory",
     "RelativePath": "api/Categorias/{id}",
     "HttpMethod": "DELETE",
@@ -114,6 +93,47 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CategoriasAPI.Controllers.CategoriasController",
+    "Method": "PutTfaCategory",
+    "RelativePath": "api/Categorias/actualizarCategoria/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryDescription",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryPoints",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryDeadLine",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

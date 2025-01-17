@@ -132,7 +132,7 @@
           }
         }
       },
-      "put": {
+      "delete": {
         "tags": [
           "Categorias"
         ],
@@ -147,32 +147,15 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TfaCategory"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TfaCategory"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TfaCategory"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Categorias/actualizarCategoria/{id}": {
+      "put": {
         "tags": [
           "Categorias"
         ],
@@ -181,6 +164,44 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "categoryName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryDescription",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryPoints",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "categoryDeadLine",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
